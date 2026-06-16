@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrewTalk — Meet Entrepreneurs Over Coffee</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f0;
+            color: #333;
+        }
+
+        /* HEADER */
+        header {
+            background: #1D4E89;
+            color: white;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 { font-size: 22px; }
+        header p { font-size: 13px; opacity: 0.7; margin-top: 2px; }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        nav a:hover { opacity: 1; }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #1D4E89, #1D9E75);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .hero h2 { font-size: 36px; margin-bottom: 12px; }
+        .hero p { font-size: 16px; opacity: 0.9; margin-bottom: 30px; }
+
+        /* SEARCH FORM */
+        .search-box {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .search-box h3 {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 12px;
+            color: #666;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        select, input {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #333;
+            background: white;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #1D4E89;
+        }
+
+        button.find {
+            width: 100%;
+            background: #1D9E75;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        button.find:hover { background: #0F6E56; }
+
+        /* MAIN CONTENT */
+        main {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* HOW IT WORKS */
+        .how {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .how h2 {
+            font-size: 20px;
+            color: #1D4E89;
+            margin-bottom: 20px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 16px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .step .num {
+            width: 36px;
+            height: 36px;
+            background: #1D4E89;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 15px;
+            margin: 0 auto 10px;
+        }
+
+        .step h4 { font-size: 13px; color: #333; margin-bottom: 4px; }
+        .step p { font-size: 12px; color: #888; line-height: 1.5; }
+
+        /* ENTREPRENEURS CARDS */
+        .entrepreneurs {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .entrepreneurs h2 {
+            font-size: 20px;
+            color: #1D4E89;
+            margin-bottom: 6px;
+        }
+
+        .entrepreneurs p.sub {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 20px;
+            background: white;
+        }
+
+        .card:hover { border-color: #1D4E89; }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .card-name { font-size: 14px; font-weight: bold; color: #333; }
+        .card-role { font-size: 12px; color: #888; margin-top: 2px; }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: #E6F1FB;
+            color: #185FA5;
+        }
+
+        .card-info {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 14px;
+        }
+
+        .card-info span { color: #333; font-weight: bold; }
+
+        button.join {
+            width: 100%;
+            background: #1D4E89;
+            color: white;
+            border: none;
+            padding: 9px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        button.join:hover { background: #0d3a6e; }
+
+        /* COFFEE SPOTS */
+        .spots {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .spots h2 {
+            font-size: 20px;
+            color: #1D4E89;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-size: 12px;
+            color: #999;
+            padding: 8px 12px;
+            border-bottom: 2px solid #eee;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        td {
+            padding: 12px;
+            font-size: 13px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #fafafa; }
+
+        .available {
+            background: #E1F5EE;
+            color: #0F6E56;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .busy {
+            background: #f5f5f5;
+            color: #999;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
+        /* JOIN FORM */
+        .join-section {
+            background: #1D4E89;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .join-section h2 {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .join-section p {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .join-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .join-form input,
+        .join-form select,
+        .join-form textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .join-form textarea {
+            grid-column: span 2;
+            resize: none;
+            height: 80px;
+        }
+
+        .join-form label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        button.submit {
+            grid-column: span 2;
+            background: #1D9E75;
+            color: white;
+            border: none;
+            padding: 13px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button.submit:hover { background: #0F6E56; }
+
+        /* FOOTER */
+        footer {
+            background: #222;
+            color: #aaa;
+            text-align: center;
+            padding: 30px;
+            font-size: 13px;
+        }
+
+        footer span { color: white; }
+
+        footer nav {
+            margin-top: 10px;
+        }
+
+        footer nav a {
+            color: #aaa;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 12px;
+        }
+
+        footer nav a:hover { color: white; }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <div>
+        <h1>BrewTalk</h1>
+        <p>Meet entrepreneurs. One coffee at a time.</p>
+    </div>
+    <nav>
+        <a href="#">How it works</a>
+        <a href="#">Find a meet</a>
+        <a href="#">Coffee spots</a>
+        <a href="#">Join</a>
+    </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+    <h2>Connect with entrepreneurs in your neighborhood</h2>
+    <p>Choose your city, your subject, and meet someone worth talking to — over coffee.</p>
+
+    <div class="search-box">
+        <h3>Find your next conversation</h3>
+        <form>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <select id="city">
+                        <option value="">Select city</option>
+                        <option value="jakarta">Jakarta</option>
+                        <option value="dubai">Dubai</option>
+                        <option value="london">London</option>
+                        <option value="paris">Paris</option>
+                        <option value="singapore">Singapore</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="neighborhood">Neighborhood</label>
+                    <select id="neighborhood">
+                        <option value="">Select area</option>
+                        <option value="scbd">SCBD</option>
+                        <option value="kemang">Kemang</option>
+                        <option value="sudirman">Sudirman</option>
+                        <option value="menteng">Menteng</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <select id="subject">
+                        <option value="">Select topic</option>
+                        <option value="ai">AI and Technology</option>
+                        <option value="startup">Startup and Funding</option>
+                        <option value="marketing">Marketing and Brand</option>
+                        <option value="indonesia">Indonesia Market</option>
+                        <option value="leadership">Leadership</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="find">Find entrepreneurs near me</button>
+        </form>
+    </div>
+</div>
+
+<main>
+
+    <!-- HOW IT WORKS -->
+    <section class="how">
+        <h2>How BrewTalk works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="num">1</div>
+                <h4>Choose your city</h4>
+                <p>Select your neighborhood and the area you want to meet in</p>
+            </div>
+            <div class="step">
+                <div class="num">2</div>
+                <h4>Pick a subject</h4>
+                <p>AI, startups, marketing, Indonesia market — you choose what you want to discuss</p>
+            </div>
+            <div class="step">
+                <div class="num">3</div>
+                <h4>Find an entrepreneur</h4>
+                <p>Browse available people who are open to meet this week</p>
+            </div>
+            <div class="step">
+                <div class="num">4</div>
+                <h4>Request a coffee</h4>
+                <p>Send a request and pick a spot — meet in person, one coffee at a time</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ENTREPRENEURS AVAILABLE -->
+    <section class="entrepreneurs">
+        <h2>Available this week — Jakarta</h2>
+        <p class="sub">Entrepreneurs open for a coffee conversation</p>
+
+        <div class="cards">
+
+            <article class="card">
+                <div class="card-top">
+                    <div class="avatar" style="background:#1D4E89">HL</div>
+                    <div>
+                        <div class="card-name">Hicham Lamrani</div>
+                        <div class="card-role">AI Strategy & Indonesia Market</div>
+                    </div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag">AI</span>
+                    <span class="tag">Indonesia</span>
+                    <span class="tag">Brand</span>
+                </div>
+                <div class="card-info">
+                    <span>Neighborhood:</span> SCBD<br>
+                    <span>Preferred spot:</span> Anomali Coffee<br>
+                    <span>Available:</span> Tuesday & Thursday
+                </div>
+                <button class="join">Request a coffee</button>
+            </article>
+
+            <article class="card">
+                <div class="card-top">
+                    <div class="avatar" style="background:#1D9E75">SR</div>
+                    <div>
+                        <div class="card-name">Siti Rahma</div>
+                        <div class="card-role">Founder — EdTech Startup</div>
+                    </div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag">Startup</span>
+                    <span class="tag">Funding</span>
+                    <span class="tag">EdTech</span>
+                </div>
+                <div class="card-info">
+                    <span>Neighborhood:</span> Kemang<br>
+                    <span>Preferred spot:</span> Kopi Kenangan<br>
+                    <span>Available:</span> Monday & Wednesday
+                </div>
+                <button class="join">Request a coffee</button>
+            </article>
+
+            <article class="card">
+                <div class="card-top">
+                    <div class="avatar" style="background:#854F0B">AP</div>
+                    <div>
+                        <div class="card-name">Andre Putra</div>
+                        <div class="card-role">Co-founder — Logistics Platform</div>
+                    </div>
+                </div>
+                <div class="card-tags">
+                    <span class="tag">Logistics</span>
+                    <span class="tag">B2B</span>
+                    <span class="tag">Operations</span>
+                </div>
+                <div class="card-info">
+                    <span>Neighborhood:</span> Sudirman<br>
+                    <span>Preferred spot:</span> Common Grounds<br>
+                    <span>Available:</span> Friday morning
+                </div>
+                <button class="join">Request a coffee</button>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- COFFEE SPOTS TABLE -->
+    <section class="spots">
+        <h2>Coffee spots in Jakarta</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Neighborhood</th>
+                    <th>Vibe</th>
+                    <th>WiFi</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Anomali Coffee</strong></td>
+                    <td>SCBD</td>
+                    <td>Quiet, professional</td>
+                    <td>Yes</td>
+                    <td><span class="available">Available</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Common Grounds</strong></td>
+                    <td>Sudirman</td>
+                    <td>Modern, energetic</td>
+                    <td>Yes</td>
+                    <td><span class="available">Available</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Kopi Kenangan</strong></td>
+                    <td>Kemang</td>
+                    <td>Casual, relaxed</td>
+                    <td>Yes</td>
+                    <td><span class="available">Available</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Tanamera</strong></td>
+                    <td>Menteng</td>
+                    <td>Premium, quiet</td>
+                    <td>Yes</td>
+                    <td><span class="busy">Busy today</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Fore Coffee</strong></td>
+                    <td>Kuningan</td>
+                    <td>Fast, convenient</td>
+                    <td>No</td>
+                    <td><span class="available">Available</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- JOIN FORM -->
+    <section class="join-section">
+        <h2>List yourself as available</h2>
+        <p>Let other entrepreneurs find you. It takes 30 seconds.</p>
+
+        <form class="join-form">
+            <div>
+                <label for="fname">Your name</label>
+                <input type="text" id="fname" placeholder="Hicham Lamrani">
+            </div>
+            <div>
+                <label for="femail">Your email</label>
+                <input type="email" id="femail" placeholder="you@email.com">
+            </div>
+            <div>
+                <label for="frole">What you do</label>
+                <input type="text" id="frole" placeholder="Founder, AI Strategy">
+            </div>
+            <div>
+                <label for="farea">Your neighborhood</label>
+                <select id="farea">
+                    <option value="">Select area</option>
+                    <option>SCBD</option>
+                    <option>Kemang</option>
+                    <option>Sudirman</option>
+                    <option>Menteng</option>
+                </select>
+            </div>
+            <div style="grid-column: span 2">
+                <label for="ftopic">Topics you want to discuss</label>
+                <input type="text" id="ftopic" placeholder="AI, Indonesia market, startup funding...">
+            </div>
+            <div style="grid-column: span 2">
+                <label for="fbio">One line about you</label>
+                <textarea id="fbio" placeholder="I build AI tools for Southeast Asia and love talking about the Indonesia opportunity..."></textarea>
+            </div>
+            <button type="submit" class="submit">Join BrewTalk — it's free</button>
+        </form>
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <p><span>BrewTalk</span> — Meet entrepreneurs. One coffee at a time.</p>
+    <nav>
+        <a href="#">How it works</a>
+        <a href="#">Find a meet</a>
+        <a href="#">Coffee spots</a>
+        <a href="#">Privacy</a>
+        <a href="#">Contact</a>
+    </nav>
+    <p style="margin-top:12px">Built by <span>Hicham Lamrani</span> · Learning in public · 2026</p>
+</footer>
+
+</body>
+</html>
