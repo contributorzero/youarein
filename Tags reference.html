@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>HTML Tags Reference</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            background: #1D4E89;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        header h1 { font-size: 28px; margin-bottom: 8px; }
+        header p { font-size: 15px; opacity: 0.85; }
+
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        section h2 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: #888;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-size: 12px;
+            color: #999;
+            padding: 6px 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        td {
+            padding: 9px 10px;
+            font-size: 13px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #fafafa; }
+
+        .tag {
+            font-family: monospace;
+            font-size: 13px;
+            color: #185FA5;
+            background: #E6F1FB;
+            padding: 2px 7px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+
+        .desc { color: #333; }
+        .note { color: #888; font-size: 12px; }
+
+        /* LIVE DEMO AREA */
+        .demo {
+            background: #f9f9f9;
+            border: 1px dashed #ddd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .demo h3 {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            font-size: 13px;
+            color: #999;
+        }
+
+        footer span { color: #1D4E89; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>HTML Tags — Complete Reference</h1>
+    <p>Every tag, what it does, and a live example. Built while learning.</p>
+</header>
+
+<main>
+
+    <!-- PAGE STRUCTURE -->
+    <section>
+        <h2>Page Structure</h2>
+        <table>
+            <tr><th>Tag</th><th>What it does</th><th>Note</th></tr>
+            <tr><td><code class="tag">&lt;!DOCTYPE html&gt;</code></td><td class="desc">Tells browser this is HTML5</td><td class="note">Always the first line</td></tr>
+            <tr><td><code class="tag">&lt;html&gt;</code></td><td class="desc">Root of the whole page</td><td class="note">Wraps everything</td></tr>
+            <tr><td><code class="tag">&lt;head&gt;</code></td><td class="desc">Info about the page — not visible</td><td class="note">Title and CSS links go here</td></tr>
+            <tr><td><code class="tag">&lt;title&gt;</code></td><td class="desc">Text shown in browser tab</td><td class="note">Only one per page</td></tr>
+            <tr><td><code class="tag">&lt;body&gt;</code></td><td class="desc">Everything visible on the page</td><td class="note">Only one per page</td></tr>
+            <tr><td><code class="tag">&lt;link&gt;</code></td><td class="desc">Connects external CSS file</td><td class="note">Goes inside head</td></tr>
+            <tr><td><code class="tag">&lt;style&gt;</code></td><td class="desc">CSS written directly in HTML</td><td class="note">Goes inside head</td></tr>
+            <tr><td><code class="tag">&lt;script&gt;</code></td><td class="desc">JavaScript written in HTML</td><td class="note">Usually before closing body</td></tr>
+            <tr><td><code class="tag">&lt;meta&gt;</code></td><td class="desc">Page info for browsers and Google</td><td class="note">charset, viewport, description</td></tr>
+        </table>
+    </section>
+
+    <!-- TEXT -->
+    <section>
+        <h2>Text and Headings</h2>
+        <table>
+            <tr><th>Tag</th><th>What it does</th><th>Note</th></tr>
+            <tr><td><code class="tag">&lt;h1&gt;</code></td><td class="desc">Biggest heading</td><td class="note">Only one per page</td></tr>
+            <tr><td><code class="tag">&lt;h2&gt; to &lt;h6&gt;</code></td><td class="desc">Smaller headings</td><td class="note">h6 is smallest</td></tr>
+            <tr><td><code class="tag">&lt;p&gt;</code></td><td class="desc">Paragraph — starts a new line</td><td class="note">Most used text tag</td></tr>
+            <tr><td><code class="tag">&lt;span&gt;</code></td><td class="desc">Inline container for styling text</td><td class="note">Like div but stays inline</td></tr>
+            <tr><td><code class="tag">&lt;strong&gt;</code></td><td class="desc">Bold text</td><td class="note"><strong>like this</strong></td></tr>
+            <tr><td><code class="tag">&lt;em&gt;</code></td><td class="desc">Italic text</td><td class="note"><em>like this</em></td></tr>
+            <tr><td><code class="tag">&lt;br&gt;</code></td><td class="desc">Line break</td><td class="note">No closing tag needed</td></tr>
+            <tr><td><code class="tag">&lt;hr&gt;</code></td><td class="desc">Horizontal divider line</td><td class="note">No closing tag needed</td></tr>
+            <tr><td><code class="tag">&lt;blockquote&gt;</code></td><td class="desc">Indented quote block</td><td class="note">For long quotes</td></tr>
+            <tr><td><code class="tag">&lt;code&gt;</code></td><td class="desc">Monospace font for code</td><td class="note"><code>like this</code></td></tr>
+        </table>
+
+        <div class="demo">
+            <h3>Live example</h3>
+            <h1>This is h1</h1>
+            <h2>This is h2</h2>
+            <h3>This is h3</h3>
+            <p>This is a paragraph. It starts on its own line.</p>
+            <p>This text has <strong>bold</strong> and <em>italic</em> and <code>code</code> inside it.</p>
+            <hr>
+            <blockquote style="border-left: 3px solid #ccc; padding-left: 12px; color: #666;">
+                This is a blockquote — used for quotes or callouts.
+            </blockquote>
+        </div>
+    </section>
+
+    <!-- LINKS AND MEDIA -->
+    <section>
+        <h2>Links and Media</h2>
+        <table>
+            <tr><th>Tag</th><th>What it does</th><th>Note</th></tr>
+            <tr><td><code class="tag">&lt;a&gt;</code></td><td class="desc">Clickable link — needs href</td><td class="note">anchor tag</td></tr>
+            <tr><td><code class="tag">&lt;img&gt;</code></td><td class="desc">Display an image — needs src</td><td class="note">No closing tag needed</td></tr>
+            <tr><td><code class="tag">&lt;video&gt;</code></td><td class="desc">Embed a video</td><td class="note">needs src attribute</td></tr>
+            <tr><td><code class="tag">&lt;audio&gt;</code></td><td class="desc">Embed audio</td><td class="note">needs src attribute</td></tr>
+            <tr><td><code class="tag">&lt;iframe&gt;</code></td><td class="desc">Embed another webpage inside yours</td><td class="note">YouTube embeds use this</td></tr>
+        </table>
+
+        <div class="demo">
+            <h3>Live example</h3>
+            <p><a href="https://google.com" target="_blank">Click to go to Google</a></p>
+            <p><a href="index.html">Click to go back to my homepage</a></p>
+        </div>
+    </section>
+
+    <!-- LISTS -->
+    <section>
+        <h2>Lists</h2>
+        <table>
+            <tr><th>Tag</th><th>What it does</th><th>Note</th></tr>
+            <tr><td><code class="tag">&lt;ul&gt;</code></td><td class="desc">Unordered list — bullet points</td><td class="note">Wraps li items</td></tr>
+            <tr><td><code class="tag">&lt;ol&gt;</code></td><td class="desc">Ordered list — numbered</td><td class="note">Wraps li items</td></tr>
+            <tr><td><code class="tag">&lt;li&gt;</code></td><td class="desc">One list item</td><td class="note">Always needs ul or ol parent</td></tr>
+        </table>
+
+        <div class="demo">
+            <h3>Live example</h3>
+            <p><strong>Unordered list:</strong></p>
+            <ul>
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>Python</li>
+            </ul>
+            <br>
+            <p><strong>Ordered list:</strong></p>
+            <ol>
+                <li>Learn HTML</li>
+                <li>Learn CSS</li>
+                <li>Publish online</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- LAYOUT -->
+    <section>
+        <h2>Layout and Containers</h2>
+        <table>
+            <tr><th>Tag</th><th>What it does</th><th>Note</th></tr>
+            <tr><td><code class="tag">&lt;div&gt;</code></td><td class="desc">Invisible block container</td><td class="note">Most used layout tag</td></tr>
+            <tr><td><code class="tag">&lt;header&gt;</code></td><td class="desc">Top section of page</td><td class="note">Semantic div</td></tr>
+            <tr><td><code class="tag">&lt;nav&gt;</code></td><td class="desc">Navigation links container</td><td class="note">Semantic div</td></tr>
+            <tr><td><code class="tag">&lt;main&gt;</code></td><td class="desc">Main content of the page</td><td class="note">Only one per page</td></tr>
+            <tr><td><code class="tag">&lt;section&gt;</code></td><td class="desc">A thematic section of content</td><td class="note">Semantic div</td></tr>
+            <tr><td><code class="tag">&lt;article&gt;</code></td><td class="desc">Self-contained content</td><td class="note">Blog posts, news articles</td></tr>
+            <tr><td><code class="tag">&lt;aside&gt;</code></td><td class="desc">Side content</td><td class="note">Sidebars, tips</td></tr>
+            <tr><td><code class="tag">&lt;footer&gt;</code></td><td class="desc">Bottom section of page</td><td class="note">Semantic div</td></tr>
+        </table>
+
+        <div class="demo">
+            <h3>Live example — four divs building a page</h3>
+            <div style="background:#1D4E89;color:white;padding:10px;border-radius:6px;margin-bottom:6px">header</div>
+            <div style="background:#1D9E75;color:white;padding:20px;border-radius:6px;text-align:center;margin-bottom:6px">hero</div>
+            <div style="background:#eee;padding:10px;border-radius:6px;margin-bottom:6px">content</div>
+            <div style="background:#555;color:white;padding:10px;border-radius:6px;text-align:center">footer</div>
+        </div>
+    </section>
+
+    <!-- TABLES -->
+    <section>
+        <h2>Tables</h2>
+        <table>
+            <tr><th>Tag</th><th>What it does</th><th>Note</th></tr>
+            <tr><td><code class="tag">&lt;table&gt;</code></td><td class="desc">Creates a table</td><td class="note">Wraps everything</td></tr>
+            <tr><td><code class="tag">&lt;thead&gt;</code></td><td class="desc">Table header group</td><td class="note">Contains th rows</td></tr>
+            <tr><td><code class="tag">&lt;tbody&gt;</code></td><td class="desc">Table body group</td><td class="note">Contains td rows</td></tr>
+            <tr><td><code class="tag">&lt;tr&gt;</code></td><td class="desc">Table row</td><td class="note">One horizontal line</td></tr>
+            <tr><td><code class="tag">&lt;th&gt;</code></td><td class="desc">Table header cell — bold</td><td class="note">Goes inside thead</td></tr>
+            <tr><td><code class="tag">&lt;td&gt;</code></td><td class="desc">Table data cell — normal</td><td class="note">Goes inside tbody</td></tr>
+        </table>
+
+        <div class="demo">
+            <h3>Live example</h3>
+            <table style="border-collapse:collapse;width:100%">
+                <thead>
+                    <tr>
+                        <th style="border:1px solid #ddd;padding:8px;background:#f0f0f0">Name</th>
+                        <th style="border:1px solid #ddd;padding:8px;background:#f0f0f0">Age</th>
+                        <th style="border:1px solid #ddd;padding:8px;background:#f0f0f0">City</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border:1px solid #ddd;padding:8px">Hicham</td>
+                        <td style="border:1px solid #ddd;padding:8px">48</td>
+                        <td style="border:1px solid #ddd;padding:8px">Jakarta</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #ddd;padding:8px">Ana Paula</td>
+                        <td style="border:1px solid #ddd;padding:8px">52</td>
+                        <td style="border:1px solid #ddd;padding:8px">Sao Paulo</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- FORMS -->
+    <section>
+        <h2>Forms</h2>
+        <table>
+            <tr><th>Tag</th><th>What it does</th><th>Note</th></tr>
+            <tr><td><code class="tag">&lt;form&gt;</code></td><td class="desc">Container for all form elements</td><td class="note">needs action and method</td></tr>
+            <tr><td><code class="tag">&lt;input&gt;</code></td><td class="desc">Input field — type defines what kind</td><td class="note">No closing tag needed</td></tr>
+            <tr><td><code class="tag">&lt;textarea&gt;</code></td><td class="desc">Multi-line text box</td><td class="note">For long text like messages</td></tr>
+            <tr><td><code class="tag">&lt;select&gt;</code></td><td class="desc">Dropdown list</td><td class="note">Wraps option tags</td></tr>
+            <tr><td><code class="tag">&lt;option&gt;</code></td><td class="desc">One item in a dropdown</td><td class="note">Goes inside select</td></tr>
+            <tr><td><code class="tag">&lt;button&gt;</code></td><td class="desc">Clickable button</td><td class="note">More flexible than input type button</td></tr>
+            <tr><td><code class="tag">&lt;label&gt;</code></td><td class="desc">Text label linked to an input</td><td class="note">Uses for= to link to input id=</td></tr>
+            <tr><td><code class="tag">&lt;datalist&gt;</code></td><td class="desc">Searchable suggestion list</td><td class="note">Links to input via list= and id=</td></tr>
+        </table>
+
+        <div class="demo">
+            <h3>Live example</h3>
+            <form style="display:flex;flex-direction:column;gap:10px;max-width:400px">
+                <label for="name">Your name</label>
+                <input type="text" id="name" placeholder="Enter your name">
+
+                <label for="email">Your email</label>
+                <input type="email" id="email" placeholder="Enter your email">
+
+                <label for="city">Your city</label>
+                <select id="city">
+                    <option value="">Choose a city</option>
+                    <option value="jakarta">Jakarta</option>
+                    <option value="dubai">Dubai</option>
+                    <option value="london">London</option>
+                </select>
+
+                <label for="message">Your message</label>
+                <textarea id="message" placeholder="Write something..." rows="3"></textarea>
+
+                <label>Favorite color?</label>
+                <label><input type="radio" name="color" value="red"> Red</label>
+                <label><input type="radio" name="color" value="blue"> Blue</label>
+                <label><input type="radio" name="color" value="green"> Green</label>
+
+                <label><input type="checkbox"> I agree to the terms</label>
+
+                <button type="submit" style="background:#1D4E89;color:white;padding:10px;border:none;border-radius:6px;cursor:pointer">Submit</button>
+            </form>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    Built by <span>Hicham Lamrani</span> · Learning HTML & CSS · 2026
+</footer>
+
+</body>
+</html>
