@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS Style Game</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f5f5f0; padding: 30px; }
+        .app { max-width: 950px; margin: 0 auto; }
+        h1 { text-align: center; color: #1D4E89; margin-bottom: 20px; }
+        .target-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(80px,1fr)); gap: 6px; margin-bottom: 16px; }
+        .target-btn { font-size: 11px; padding: 6px 8px; border-radius: 6px; border: 1px solid #ddd; background: #f5f5f5; color: #666; cursor: pointer; text-align: center; font-family: monospace; }
+        .target-btn.active { background: #fff; border-color: #185FA5; color: #185FA5; font-weight: bold; }
+        .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .panel { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .panel-label { font-size: 11px; font-weight: bold; color: #888; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+        .prop-section { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #f0f0f0; }
+        .prop-section:last-child { border-bottom: none; margin-bottom: 0; }
+        .prop-title { font-size: 11px; font-weight: bold; color: #333; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .04em; }
+        .prop-row { display: grid; grid-template-columns: 110px 1fr; align-items: center; gap: 8px; margin-bottom: 6px; }
+        .prop-row label { font-size: 11px; color: #888; font-family: monospace; }
+        .prop-row select, .prop-row input[type=text] { font-size: 11px; padding: 4px 6px; border-radius: 6px; border: 1px solid #ddd; width: 100%; }
+        .prop-row input[type=color] { width: 100%; height: 28px; border-radius: 6px; border: 1px solid #ddd; padding: 2px; cursor: pointer; }
+        .preview-wrap { background: #f9f9f9; border-radius: 8px; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 140px; margin-bottom: 12px; overflow: hidden; }
+        .code-block { background: #1A1A2E; color: #a8d8a8; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 11px; line-height: 2; word-break: break-all; max-height: 220px; overflow-y: auto; }
+        .pk { color: #85b7eb; } .pv { color: #f0c987; }
+        .reset-btn { width: 100%; padding: 8px; border-radius: 6px; font-size: 12px; cursor: pointer; margin-top: 8px; border: 1px solid #ddd; background: #f5f5f5; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="app">
+<h1>CSS Style Game — Style Any HTML Element</h1>
+
+<div class="panel-label">Pick any HTML element to style</div>
+<div class="target-grid" id="target-grid">
+    <button class="target-btn active" onclick="setTarget(this,'h1','Heading 1','h1')">h1</button>
+    <button class="target-btn" onclick="setTarget(this,'h2','Heading 2','h2')">h2</button>
+    <button class="target-btn" onclick="setTarget(this,'h3','Heading 3','h3')">h3</button>
+    <button class="target-btn" onclick="setTarget(this,'p','A paragraph of text that you are reading right now.','p')">p</button>
+    <button class="target-btn" onclick="setTarget(this,'a','Click me','a')">a</button>
+    <button class="target-btn" onclick="setTarget(this,'strong','Bold text','strong')">strong</button>
+    <button class="target-btn" onclick="setTarget(this,'em','Italic text','em')">em</button>
+    <button class="target-btn" onclick="setTarget(this,'span','Inline span','span')">span</button>
+    <button class="target-btn" onclick="setTarget(this,'div','This is a div block','div')">div</button>
+    <button class="target-btn" onclick="setTarget(this,'button','Click me','button')">button</button>
+    <button class="target-btn" onclick="setTarget(this,'input','Type here...','input')">input</button>
+    <button class="target-btn" onclick="setTarget(this,'textarea','Write your message here...','textarea')">textarea</button>
+    <button class="target-btn" onclick="setTarget(this,'ul-item','List item','li')">li</button>
+    <button class="target-btn" onclick="setTarget(this,'table-demo','Table','table')">table</button>
+    <button class="target-btn" onclick="setTarget(this,'img-box','IMG','img')">img</button>
+    <button class="target-btn" onclick="setTarget(this,'header-demo','My Website Header','header')">header</button>
+    <button class="target-btn" onclick="setTarget(this,'nav-demo','Home · About · Contact','nav')">nav</button>
+    <button class="target-btn" onclick="setTarget(this,'section-demo','Section content goes here','section')">section</button>
+    <button class="target-btn" onclick="setTarget(this,'footer-demo','Footer — 2026','footer')">footer</button>
+    <button class="target-btn" onclick="setTarget(this,'blockquote','The courage to say Hello.','blockquote')">blockquote</button>
+    <button class="target-btn" onclick="setTarget(this,'code','font-size: 16px','code')">code</button>
+    <button class="target-btn" onclick="setTarget(this,'label-demo','Your name','label')">label</button>
+    <button class="target-btn" onclick="setTarget(this,'select-demo','Dropdown','select')">select</button>
+    <button class="target-btn" onclick="setTarget(this,'hr-demo','','hr')">hr</button>
+</div>
+
+<div class="cols">
+    <div class="panel">
+        <div class="panel-label">Style properties</div>
+
+        <div class="prop-section">
+            <div class="prop-title">Text</div>
+            <div class="prop-row"><label>color</label><input type="color" id="color" value="#222222" oninput="update()"></div>
+            <div class="prop-row"><label>font-size</label><select id="fontSize" onchange="update()">
+                <option value="11px">11px</option><option value="13px">13px</option>
+                <option value="16px" selected>16px</option><option value="20px">20px</option>
+                <option value="28px">28px</option><option value="40px">40px</option><option value="56px">56px</option>
+            </select></div>
+            <div class="prop-row"><label>font-weight</label><select id="fontWeight" onchange="update()">
+                <option value="300">300 — light</option><option value="400" selected>400 — normal</option>
+                <option value="700">700 — bold</option><option value="900">900 — black</option>
+            </select></div>
+            <div class="prop-row"><label>font-style</label><select id="fontStyle" onchange="update()">
+                <option value="normal" selected>normal</option><option value="italic">italic</option>
+            </select></div>
+            <div class="prop-row"><label>font-family</label><select id="fontFamily" onchange="update()">
+                <option value="Arial, sans-serif" selected>Arial</option>
+                <option value="Georgia, serif">Georgia</option>
+                <option value="monospace">Monospace</option>
+                <option value="'Times New Roman', serif">Times New Roman</option>
+                <option value="Verdana, sans-serif">Verdana</option>
+            </select></div>
+            <div class="prop-row"><label>text-align</label><select id="textAlign" onchange="update()">
+                <option value="left" selected>left</option><option value="center">center</option>
+                <option value="right">right</option><option value="justify">justify</option>
+            </select></div>
+            <div class="prop-row"><label>text-decoration</label><select id="textDeco" onchange="update()">
+                <option value="none" selected>none</option><option value="underline">underline</option>
+                <option value="line-through">line-through</option><option value="overline">overline</option>
+            </select></div>
+            <div class="prop-row"><label>text-transform</label><select id="textTransform" onchange="update()">
+                <option value="none" selected>none</option><option value="uppercase">uppercase</option>
+                <option value="capitalize">capitalize</option><option value="lowercase">lowercase</option>
+            </select></div>
+            <div class="prop-row"><label>letter-spacing</label><select id="letterSpacing" onchange="update()">
+                <option value="-1px">-1px tight</option><option value="0px" selected>0px normal</option>
+                <option value="2px">2px spaced</option><option value="5px">5px wide</option>
+            </select></div>
+            <div class="prop-row"><label>line-height</label><select id="lineHeight" onchange="update()">
+                <option value="1">1 — tight</option><option value="1.4" selected>1.4 — normal</option>
+                <option value="1.8">1.8 — relaxed</option><option value="2.5">2.5 — loose</option>
+            </select></div>
+        </div>
+
+        <div class="prop-section">
+            <div class="prop-title">Background and color</div>
+            <div class="prop-row"><label>background-color</label><input type="color" id="bgColor" value="#ffffff" oninput="update()"></div>
+            <div class="prop-row"><label>opacity</label><select id="opacity" onchange="update()">
+                <option value="1" selected>1 — full</option><option value="0.8">0.8</option>
+                <option value="0.5">0.5 — half</option><option value="0.2">0.2 — faint</option>
+            </select></div>
+        </div>
+
+        <div class="prop-section">
+            <div class="prop-title">Border</div>
+            <div class="prop-row"><label>border</label><select id="border" onchange="update()">
+                <option value="none" selected>none</option>
+                <option value="1px solid #ccc">1px solid gray</option>
+                <option value="2px solid #185FA5">2px solid blue</option>
+                <option value="2px dashed #1D9E75">2px dashed green</option>
+                <option value="3px solid #854F0B">3px solid amber</option>
+                <option value="4px solid #E24B4A">4px solid red</option>
+                <option value="2px dotted #534AB7">2px dotted purple</option>
+            </select></div>
+            <div class="prop-row"><label>border-radius</label><select id="borderRadius" onchange="update()">
+                <option value="0px">0px — sharp</option><option value="4px">4px</option>
+                <option value="8px" selected>8px</option><option value="16px">16px</option>
+                <option value="50px">50px — pill</option><option value="50%">50% — circle</option>
+            </select></div>
+            <div class="prop-row"><label>border-left</label><select id="borderLeft" onchange="update()">
+                <option value="none" selected>none</option>
+                <option value="4px solid #185FA5">4px solid blue</option>
+                <option value="4px solid #1D9E75">4px solid green</option>
+                <option value="4px solid #E24B4A">4px solid red</option>
+            </select></div>
+        </div>
+
+        <div class="prop-section">
+            <div class="prop-title">Spacing</div>
+            <div class="prop-row"><label>padding</label><select id="padding" onchange="update()">
+                <option value="0px">0px — none</option>
+                <option value="4px 8px">4px 8px — tight</option>
+                <option value="8px 16px" selected>8px 16px</option>
+                <option value="16px 24px">16px 24px</option>
+                <option value="24px 40px">24px 40px — airy</option>
+            </select></div>
+            <div class="prop-row"><label>margin</label><select id="margin" onchange="update()">
+                <option value="0px" selected>0px</option>
+                <option value="8px">8px</option><option value="16px">16px</option>
+                <option value="0 auto">0 auto — centered</option>
+            </select></div>
+        </div>
+
+        <div class="prop-section">
+            <div class="prop-title">Size</div>
+            <div class="prop-row"><label>width</label><select id="width" onchange="update()">
+                <option value="auto" selected>auto</option>
+                <option value="80px">80px</option><option value="160px">160px</option>
+                <option value="260px">260px</option><option value="100%">100%</option>
+            </select></div>
+            <div class="prop-row"><label>height</label><select id="height" onchange="update()">
+                <option value="auto" selected>auto</option>
+                <option value="40px">40px</option><option value="80px">80px</option>
+                <option value="120px">120px</option>
+            </select></div>
+        </div>
+
+        <button class="reset-btn" onclick="resetAll()">Reset to default</button>
+    </div>
+
+    <div class="panel">
+        <div class="panel-label">Live preview</div>
+        <div class="preview-wrap" id="preview-wrap"></div>
+
+        <div class="panel-label">CSS syntax — copy this into your CSS file</div>
+        <div class="code-block" id="code-out"></div>
+    </div>
+</div>
+</div>
+
+<script>
+let currentTag = 'h1';
+let currentSelector = 'h1';
+let currentContent = 'Heading 1';
+let currentType = 'h1';
+
+function setTarget(btn, type, content, selector) {
+  document.querySelectorAll('.target-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentTag = type;
+  currentSelector = selector;
+  currentContent = content;
+  currentType = type;
+  update();
+}
+
+function getVals() {
+  return {
+    color: document.getElementById('color').value,
+    fontSize: document.getElementById('fontSize').value,
+    fontWeight: document.getElementById('fontWeight').value,
+    fontStyle: document.getElementById('fontStyle').value,
+    fontFamily: document.getElementById('fontFamily').value,
+    textAlign: document.getElementById('textAlign').value,
+    textDeco: document.getElementById('textDeco').value,
+    textTransform: document.getElementById('textTransform').value,
+    letterSpacing: document.getElementById('letterSpacing').value,
+    lineHeight: document.getElementById('lineHeight').value,
+    bgColor: document.getElementById('bgColor').value,
+    opacity: document.getElementById('opacity').value,
+    border: document.getElementById('border').value,
+    borderRadius: document.getElementById('borderRadius').value,
+    borderLeft: document.getElementById('borderLeft').value,
+    padding: document.getElementById('padding').value,
+    margin: document.getElementById('margin').value,
+    width: document.getElementById('width').value,
+    height: document.getElementById('height').value,
+  };
+}
+
+function buildElement(type, content, v) {
+  const s = `color:${v.color};font-size:${v.fontSize};font-weight:${v.fontWeight};font-style:${v.fontStyle};font-family:${v.fontFamily};text-align:${v.textAlign};text-decoration:${v.textDeco};text-transform:${v.textTransform};letter-spacing:${v.letterSpacing};line-height:${v.lineHeight};background-color:${v.bgColor};opacity:${v.opacity};border:${v.border};border-radius:${v.borderRadius};border-left:${v.borderLeft};padding:${v.padding};margin:${v.margin};width:${v.width};height:${v.height};transition:all .15s;`;
+
+  if (type === 'ul-item') return `<ul style="padding-left:20px"><li style="${s}">List item one</li><li style="${s}">List item two</li></ul>`;
+  if (type === 'table-demo') return `<table style="${s}border-collapse:collapse"><tr><th style="border:1px solid #ccc;padding:6px">Name</th><th style="border:1px solid #ccc;padding:6px">City</th></tr><tr><td style="border:1px solid #ccc;padding:6px">Hicham</td><td style="border:1px solid #ccc;padding:6px">Jakarta</td></tr></table>`;
+  if (type === 'img-box') return `<div style="${s}display:flex;align-items:center;justify-content:center;min-width:80px;min-height:80px;background:#ddd">IMG</div>`;
+  if (type === 'input') return `<input placeholder="${content}" style="${s}">`;
+  if (type === 'textarea') return `<textarea style="${s}">${content}</textarea>`;
+  if (type === 'button') return `<button style="${s}cursor:pointer">${content}</button>`;
+  if (type === 'select-demo') return `<select style="${s}"><option>Jakarta</option><option>Dubai</option></select>`;
+  if (type === 'hr-demo') return `<hr style="${s}">`;
+  if (type === 'label-demo') return `<label style="${s}">${content}</label>`;
+  return `<${currentSelector} style="${s}">${content}</${currentSelector}>`;
+}
+
+function update() {
+  const v = getVals();
+  document.getElementById('preview-wrap').innerHTML = buildElement(currentType, currentContent, v);
+
+  const props = [
+    ['color', v.color], ['font-size', v.fontSize], ['font-weight', v.fontWeight],
+    ['font-style', v.fontStyle], ['font-family', v.fontFamily], ['text-align', v.textAlign],
+    ['text-decoration', v.textDeco], ['text-transform', v.textTransform],
+    ['letter-spacing', v.letterSpacing], ['line-height', v.lineHeight],
+    ['background-color', v.bgColor], ['opacity', v.opacity], ['border', v.border],
+    ['border-radius', v.borderRadius], ['border-left', v.borderLeft],
+    ['padding', v.padding], ['margin', v.margin], ['width', v.width], ['height', v.height],
+  ];
+
+  document.getElementById('code-out').innerHTML =
+    `<span class="pk">${currentSelector}</span> {<br>` +
+    props.map(([k,val]) => `&nbsp;&nbsp;<span class="pk">${k}</span>: <span class="pv">${val}</span>;`).join('<br>') +
+    '<br>}';
+}
+
+function resetAll() {
+  document.getElementById('color').value = '#222222';
+  document.getElementById('fontSize').value = '16px';
+  document.getElementById('fontWeight').value = '400';
+  document.getElementById('fontStyle').value = 'normal';
+  document.getElementById('fontFamily').value = 'Arial, sans-serif';
+  document.getElementById('textAlign').value = 'left';
+  document.getElementById('textDeco').value = 'none';
+  document.getElementById('textTransform').value = 'none';
+  document.getElementById('letterSpacing').value = '0px';
+  document.getElementById('lineHeight').value = '1.4';
+  document.getElementById('bgColor').value = '#ffffff';
+  document.getElementById('opacity').value = '1';
+  document.getElementById('border').value = 'none';
+  document.getElementById('borderRadius').value = '8px';
+  document.getElementById('borderLeft').value = 'none';
+  document.getElementById('padding').value = '8px 16px';
+  document.getElementById('margin').value = '0px';
+  document.getElementById('width').value = 'auto';
+  document.getElementById('height').value = 'auto';
+  update();
+}
+
+update();
+</script>
+</body>
+</html>
