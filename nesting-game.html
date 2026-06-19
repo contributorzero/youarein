@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML Nesting Game</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f5f5f0; padding: 30px; }
+        .game { max-width: 600px; margin: 0 auto; }
+        .score-row { display: flex; gap: 12px; margin-bottom: 20px; }
+        .score-card { background: #fff; border-radius: 8px; padding: 12px 16px; flex: 1; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .score-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+        .score-num { font-size: 22px; font-weight: bold; color: #1D4E89; }
+        .challenge-box { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .challenge-label { font-size: 12px; color: #888; margin-bottom: 8px; }
+        .challenge-text { font-size: 16px; font-weight: 500; color: #222; line-height: 1.6; }
+        .challenge-text code { font-family: monospace; font-size: 14px; background: #f0f0f0; padding: 2px 6px; border-radius: 4px; color: #185FA5; }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .opt { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 14px; cursor: pointer; font-size: 14px; font-family: monospace; transition: all .1s; text-align: left; }
+        .opt:hover { background: #f5f5f5; }
+        .opt.correct { border-color: #0F6E56; background: #E1F5EE; color: #085041; }
+        .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+        .feedback { border-radius: 8px; padding: 14px 16px; font-size: 14px; line-height: 1.6; margin-bottom: 16px; min-height: 50px; }
+        .feedback.correct { background: #E1F5EE; color: #085041; border: 1px solid #5DCAA5; }
+        .feedback.wrong { background: #FCEBEB; color: #501313; border: 1px solid #F09595; }
+        .preview { background: #fff; border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; font-size: 13px; min-height: 50px; border: 1px solid #eee; }
+        .preview-label { font-size: 11px; color: #999; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+        .next-btn { width: 100%; padding: 12px; border-radius: 8px; font-size: 15px; cursor: pointer; background: #1D4E89; color: white; border: none; }
+        .next-btn:hover { background: #0d3a6e; }
+    </style>
+</head>
+<body>
+
+<div class="game">
+    <h1 style="text-align:center;color:#1D4E89;margin-bottom:20px">HTML Nesting Game</h1>
+
+    <div class="score-row">
+        <div class="score-card"><div class="score-label">Score</div><div class="score-num" id="score">0</div></div>
+        <div class="score-card"><div class="score-label">Question</div><div class="score-num" id="qnum">1 / 10</div></div>
+        <div class="score-card"><div class="score-label">Streak</div><div class="score-num" id="streak">0</div></div>
+    </div>
+
+    <div class="challenge-box">
+        <div class="challenge-label">Which tag should wrap this?</div>
+        <div class="challenge-text" id="challenge"></div>
+    </div>
+
+    <div class="options" id="options"></div>
+
+    <div class="preview"><div class="preview-label">Live preview</div><div id="preview-content"></div></div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <button class="next-btn" id="next-btn" style="display:none" onclick="nextQ()">Next question</button>
+</div>
+
+<script>
+const questions = [
+  {
+    inner: '<li>Jakarta</li>',
+    correct: '<ul>',
+    options: ['<ul>', '<p>', '<div>', '<td>'],
+    explanation: 'li (list item) must always live inside ul (unordered) or ol (ordered). Never alone.',
+    preview: (ans) => ans === '<ul>' ? '<ul><li>Jakarta</li></ul>' : `${ans}<li>Jakarta</li></${ans.slice(1)}`
+  },
+  {
+    inner: '<a href="page.html">Click me</a>',
+    correct: '<p>',
+    options: ['<p>', '<head>', '<title>', '<ul>'],
+    explanation: 'Links live inside paragraphs or divs — they are inline content that sits within a block element.',
+    preview: (ans) => `${ans}<a href="#">Click me</a></${ans.slice(1)}`
+  },
+  {
+    inner: '<td>Hicham</td>',
+    correct: '<tr>',
+    options: ['<tr>', '<table>', '<thead>', '<div>'],
+    explanation: 'td (table data) must go inside tr (table row). The row goes inside the table.',
+    preview: (ans) => ans === '<tr>' ? '<table border="1"><tr><td>Hicham</td></tr></table>' : `${ans}<td>Hicham</td></${ans.slice(1)}`
+  },
+  {
+    inner: '<title>My Page</title>',
+    correct: '<head>',
+    options: ['<head>', '<body>', '<div>', '<header>'],
+    explanation: 'title goes inside head — it shows in the browser tab, not on the page itself.',
+    preview: (ans) => ans === '<head>' ? 'Browser tab shows: My Page' : `${ans}<title>My Page</title></${ans.slice(1)}`
+  },
+  {
+    inner: '<img src="photo.jpg">',
+    correct: '<div>',
+    options: ['<div>', '<head>', '<ul>', '<tr>'],
+    explanation: 'Images are inline elements — they sit inside block containers like div or p.',
+    preview: (ans) => ans === '<div>' ? '<div><img src="" alt="photo" width="60"></div>' : `Wrong — images go in div or p, not ${ans}`
+  },
+  {
+    inner: '<option value="Jakarta">Jakarta</option>',
+    correct: '<select>',
+    options: ['<select>', '<form>', '<ul>', '<datalist>'],
+    explanation: 'option goes inside select (fixed dropdown) or datalist (searchable). Both work — select is most common.',
+    preview: (ans) => ans === '<select>' || ans === '<datalist>' ? '<select><option>Jakarta</option></select>' : `${ans} is not the right parent for option`
+  },
+  {
+    inner: '<th>Name</th>',
+    correct: '<tr>',
+    options: ['<tr>', '<table>', '<thead>', '<td>'],
+    explanation: 'th (table header) goes inside tr (table row) — just like td. The row then sits inside thead.',
+    preview: (ans) => ans === '<tr>' ? '<table border="1"><tr><th>Name</th></tr></table>' : `th needs to be in tr, not directly in ${ans}`
+  },
+  {
+    inner: 'Lets go to Google',
+    correct: '<p>',
+    options: ['<p>', '<a>', '<span>', '<li>'],
+    explanation: 'Plain text floating alone has no structure. Wrap it in p to make it a proper paragraph on its own line.',
+    preview: (ans) => `${ans}>Lets go to Google</${ans.slice(1)}`
+  },
+  {
+    inner: '<input type="text" placeholder="Your name">',
+    correct: '<form>',
+    options: ['<form>', '<div>', '<body>', '<section>'],
+    explanation: 'Inputs belong inside a form so the data can be collected and submitted together.',
+    preview: (ans) => ans === '<form>' ? '<form><input type="text" placeholder="Your name"></form>' : `<div><input type="text" placeholder="Your name"></div>`
+  },
+  {
+    inner: '<strong>BrewTalk</strong>',
+    correct: '<p>',
+    options: ['<p>', '<head>', '<table>', '<ul>'],
+    explanation: 'strong is an inline element — it goes inside a block like p. You cannot float inline elements alone.',
+    preview: (ans) => `${ans}<strong>BrewTalk</strong></${ans.slice(1)}`
+  }
+];
+
+let current = 0, score = 0, streak = 0, answered = false;
+
+function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
+
+function render() {
+  const q = questions[current];
+  document.getElementById('challenge').innerHTML = 'Nest <code>' + q.inner.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</code> inside:';
+  document.getElementById('qnum').textContent = (current + 1) + ' / ' + questions.length;
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('preview-content').innerHTML = '';
+  document.getElementById('next-btn').style.display = 'none';
+  answered = false;
+
+  const opts = shuffle([...q.options]);
+  const container = document.getElementById('options');
+  container.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt;
+    btn.onclick = () => answer(opt, btn, q);
+    container.appendChild(btn);
+  });
+}
+
+function answer(chosen, btn, q) {
+  if (answered) return;
+  answered = true;
+  const correct = chosen === q.correct;
+
+  document.querySelectorAll('.opt').forEach(b => {
+    if (b.textContent === q.correct) b.classList.add('correct');
+    else if (b === btn && !correct) b.classList.add('wrong');
+    b.style.pointerEvents = 'none';
+  });
+
+  const fb = document.getElementById('feedback');
+  if (correct) {
+    score++;
+    streak++;
+    fb.textContent = 'Correct! ' + q.explanation;
+    fb.className = 'feedback correct';
+  } else {
+    streak = 0;
+    fb.textContent = 'Not quite. ' + q.explanation;
+    fb.className = 'feedback wrong';
+  }
+
+  document.getElementById('score').textContent = score;
+  document.getElementById('streak').textContent = streak;
+  document.getElementById('preview-content').innerHTML = q.preview(chosen);
+  document.getElementById('next-btn').style.display = current < questions.length - 1 ? 'block' : 'none';
+
+  if (current === questions.length - 1) {
+    const fb2 = document.getElementById('feedback');
+    fb2.textContent += ' — Game over! You scored ' + score + ' out of ' + questions.length + '.';
+  }
+}
+
+function nextQ() {
+  current++;
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
