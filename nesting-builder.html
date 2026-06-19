@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML Nesting Builder</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f5f5f0; padding: 30px; }
+        .app { max-width: 900px; margin: 0 auto; }
+        h1 { text-align: center; color: #1D4E89; margin-bottom: 20px; }
+        .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .panel { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .panel-label { font-size: 12px; font-weight: bold; color: #888; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+        .tag-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .tag-btn { font-family: monospace; font-size: 12px; padding: 5px 10px; border-radius: 6px; border: 1px solid #ddd; background: #f5f5f5; color: #333; cursor: pointer; }
+        .tag-btn:hover { background: #eee; }
+        .tag-btn.selected { border-color: #185FA5; background: #E6F1FB; color: #0C447C; }
+        .stack { min-height: 120px; border: 1px dashed #ccc; border-radius: 8px; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .stack-item { display: flex; align-items: center; justify-content: space-between; font-family: monospace; font-size: 12px; padding: 6px 10px; border-radius: 6px; }
+        .remove-btn { border: none; background: none; cursor: pointer; font-size: 14px; color: #999; padding: 0 2px; }
+        .remove-btn:hover { color: #c0392b; }
+        .action-row { display: flex; gap: 8px; }
+        .action-row button { flex: 1; padding: 8px; border-radius: 6px; font-size: 13px; cursor: pointer; border: none; }
+        .preview-area { background: #f9f9f9; border-radius: 8px; min-height: 120px; padding: 12px; margin-bottom: 10px; font-size: 13px; }
+        .code-area { background: #1A1A2E; color: #a8d8a8; border-radius: 8px; padding: 10px 12px; font-family: monospace; font-size: 11px; line-height: 1.8; word-break: break-all; min-height: 60px; white-space: pre-wrap; }
+        .hint { font-size: 12px; color: #999; margin-top: 8px; line-height: 1.5; }
+        .content-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .content-row input { flex: 1; font-size: 13px; padding: 6px 10px; border-radius: 6px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+<div class="app">
+<h1>HTML Nesting Builder</h1>
+
+<div class="cols">
+
+    <div class="panel">
+        <div class="panel-label">1. Choose your inner content</div>
+        <div class="content-row">
+            <input type="text" id="content-text" value="BrewTalk" placeholder="Your text here">
+        </div>
+
+        <div class="panel-label">2. Pick a content tag</div>
+        <div class="tag-grid" id="content-tags">
+            <button class="tag-btn selected" onclick="selectContent(this,'a')">a (link)</button>
+            <button class="tag-btn" onclick="selectContent(this,'strong')">strong (bold)</button>
+            <button class="tag-btn" onclick="selectContent(this,'em')">em (italic)</button>
+            <button class="tag-btn" onclick="selectContent(this,'img')">img (image)</button>
+            <button class="tag-btn" onclick="selectContent(this,'input')">input (field)</button>
+            <button class="tag-btn" onclick="selectContent(this,'button')">button</button>
+            <button class="tag-btn" onclick="selectContent(this,'code')">code</button>
+        </div>
+
+        <div class="panel-label">3. Wrap it — choose parent tags (innermost first)</div>
+        <div class="tag-grid">
+            <button class="tag-btn" onclick="addWrap('p','#E6F1FB','#0C447C')">p</button>
+            <button class="tag-btn" onclick="addWrap('li','#E1F5EE','#085041')">li</button>
+            <button class="tag-btn" onclick="addWrap('ul','#EEEDFE','#3C3489')">ul</button>
+            <button class="tag-btn" onclick="addWrap('ol','#EEEDFE','#3C3489')">ol</button>
+            <button class="tag-btn" onclick="addWrap('td','#FAEEDA','#633806')">td</button>
+            <button class="tag-btn" onclick="addWrap('tr','#FAEEDA','#633806')">tr</button>
+            <button class="tag-btn" onclick="addWrap('table','#FAEEDA','#633806')">table</button>
+            <button class="tag-btn" onclick="addWrap('div','#F1EFE8','#444441')">div</button>
+            <button class="tag-btn" onclick="addWrap('form','#FCEBEB','#501313')">form</button>
+            <button class="tag-btn" onclick="addWrap('section','#F1EFE8','#444441')">section</button>
+            <button class="tag-btn" onclick="addWrap('nav','#E6F1FB','#0C447C')">nav</button>
+            <button class="tag-btn" onclick="addWrap('header','#E6F1FB','#0C447C')">header</button>
+        </div>
+
+        <div class="panel-label" style="margin-top:10px">Your nesting stack (innermost first)</div>
+        <div class="stack" id="stack">
+            <div style="font-size:12px;color:#999;padding:4px">Add wrapper tags above to start nesting...</div>
+        </div>
+
+        <div class="action-row">
+            <button onclick="clearStack()" style="border:1px solid #ddd;background:#f5f5f5;color:#666">Clear all</button>
+            <button onclick="buildPreview()" style="background:#185FA5;color:white">Build it</button>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-label">Live preview</div>
+        <div class="preview-area" id="preview">
+            <span style="color:#999;font-size:12px">Your result will appear here...</span>
+        </div>
+
+        <div class="panel-label">Generated HTML code</div>
+        <div class="code-area" id="code-output">Choose tags on the left and click Build it</div>
+
+        <div class="hint" id="hint"></div>
+    </div>
+
+</div>
+</div>
+
+<script>
+let wrapStack = [];
+let contentTag = 'a';
+
+const hints = {
+  'a': 'Links need href to work. Wrap in p or li for structure.',
+  'strong': 'Bold text is inline — it sits inside p or li.',
+  'em': 'Italic text is inline — it lives inside block elements like p.',
+  'img': 'Images are inline — they sit inside div, p, or td.',
+  'input': 'Inputs belong inside form so data can be collected.',
+  'button': 'Buttons work anywhere but make most sense inside form or div.',
+  'code': 'Code tag shows monospace text — wrap in p for a sentence.',
+};
+
+function selectContent(btn, tag) {
+  document.querySelectorAll('#content-tags .tag-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  contentTag = tag;
+}
+
+function addWrap(tag, bg, color) {
+  wrapStack.push({ tag, bg, color });
+  renderStack();
+}
+
+function renderStack() {
+  const el = document.getElementById('stack');
+  if (wrapStack.length === 0) {
+    el.innerHTML = '<div style="font-size:12px;color:#999;padding:4px">Add wrapper tags above to start nesting...</div>';
+    return;
+  }
+  el.innerHTML = wrapStack.map((w, i) => `
+    <div class="stack-item" style="background:${w.bg};color:${w.color};border:1px solid ${w.color}40">
+      <span>${i === 0 ? 'innermost' : i === wrapStack.length-1 ? 'outermost' : 'middle'} — &lt;${w.tag}&gt;</span>
+      <button class="remove-btn" onclick="removeWrap(${i})">x</button>
+    </div>
+  `).join('');
+}
+
+function removeWrap(i) {
+  wrapStack.splice(i, 1);
+  renderStack();
+}
+
+function clearStack() {
+  wrapStack = [];
+  renderStack();
+  document.getElementById('preview').innerHTML = '<span style="color:#999;font-size:12px">Your result will appear here...</span>';
+  document.getElementById('code-output').textContent = 'Choose tags on the left and click Build it';
+  document.getElementById('hint').textContent = '';
+}
+
+function buildPreview() {
+  const text = document.getElementById('content-text').value || 'BrewTalk';
+
+  let inner = '';
+  let innerCode = '';
+
+  if (contentTag === 'a') {
+    inner = `<a href="#" style="color:#185FA5">${text}</a>`;
+    innerCode = `<a href="#">${text}</a>`;
+  } else if (contentTag === 'img') {
+    inner = `<img src="" alt="${text}" style="width:40px;height:40px;background:#ddd;display:inline-block">`;
+    innerCode = `<img src="photo.jpg" alt="${text}">`;
+  } else if (contentTag === 'input') {
+    inner = `<input type="text" placeholder="${text}" style="padding:4px 8px;border:1px solid #ccc;border-radius:4px">`;
+    innerCode = `<input type="text" placeholder="${text}">`;
+  } else if (contentTag === 'button') {
+    inner = `<button style="padding:4px 12px;background:#185FA5;color:white;border:none;border-radius:4px;cursor:pointer">${text}</button>`;
+    innerCode = `<button>${text}</button>`;
+  } else {
+    inner = `<${contentTag}>${text}</${contentTag}>`;
+    innerCode = inner;
+  }
+
+  let html = inner;
+  let codeLines = [innerCode];
+
+  wrapStack.forEach(w => {
+    if (w.tag === 'table') {
+      html = `<table border="1" style="border-collapse:collapse;border:1px solid #ccc">${html}</table>`;
+    } else if (w.tag === 'ul') {
+      html = `<ul style="padding-left:20px">${html}</ul>`;
+    } else if (w.tag === 'ol') {
+      html = `<ol style="padding-left:20px">${html}</ol>`;
+    } else if (w.tag === 'form') {
+      html = `<form style="border:1px dashed #ccc;padding:8px;border-radius:4px">${html}</form>`;
+    } else {
+      html = `<${w.tag}>${html}</${w.tag}>`;
+    }
+    codeLines.unshift(`<${w.tag}>`);
+    codeLines.push(`</${w.tag}>`);
+  });
+
+  let formattedCode = '';
+  let ind = 0;
+  codeLines.forEach((line) => {
+    if (line.startsWith('</')) ind = Math.max(0, ind - 1);
+    formattedCode += '  '.repeat(ind) + line + '\n';
+    if (!line.startsWith('</') && !line.includes('</')) ind++;
+  });
+
+  document.getElementById('preview').innerHTML = html;
+  document.getElementById('code-output').textContent = formattedCode;
+
+  let hintText = hints[contentTag] || '';
+  const warnings = [];
+  wrapStack.forEach(w => {
+    if (w.tag === 'li' && !wrapStack.some(x => x.tag === 'ul' || x.tag === 'ol')) {
+      warnings.push('li needs a ul or ol parent');
+    }
+    if (w.tag === 'td' && !wrapStack.some(x => x.tag === 'tr')) {
+      warnings.push('td needs a tr parent');
+    }
+  });
+
+  if (warnings.length > 0) hintText += ' Warning: ' + warnings.join('. ');
+  document.getElementById('hint').textContent = hintText;
+}
+</script>
+</body>
+</html>
