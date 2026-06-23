@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS Selectors Game</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f5f5f0; padding: 30px; }
+        .game { max-width: 700px; margin: 0 auto; }
+        h1 { text-align: center; color: #1D4E89; margin-bottom: 6px; }
+        .subtitle { text-align: center; color: #888; font-size: 13px; margin-bottom: 24px; }
+        .score-row { display: flex; gap: 12px; margin-bottom: 20px; }
+        .score-card { background: #fff; border-radius: 8px; padding: 12px 16px; flex: 1; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .score-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+        .score-num { font-size: 22px; font-weight: bold; color: #1D4E89; }
+        .challenge-box { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .challenge-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+        .code-preview { background: #1A1A2E; border-radius: 8px; padding: 14px 16px; font-family: monospace; font-size: 13px; line-height: 2; margin-bottom: 14px; }
+        .pk { color: #85b7eb; } .pv { color: #f0c987; } .pc { color: #666; }
+        .question-text { font-size: 15px; font-weight: 500; color: #222; line-height: 1.6; }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .opt { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 12px 16px; cursor: pointer; font-size: 13px; font-family: monospace; transition: all .1s; text-align: left; }
+        .opt:hover { background: #f5f5f5; border-color: #aaa; }
+        .opt.correct { border-color: #0F6E56; background: #E1F5EE; color: #085041; }
+        .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+        .feedback { border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.7; margin-bottom: 16px; min-height: 50px; }
+        .feedback.correct { background: #E1F5EE; color: #085041; border: 1px solid #5DCAA5; }
+        .feedback.wrong { background: #FCEBEB; color: #501313; border: 1px solid #F09595; }
+        .visual { background: #fff; border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; border: 1px solid #eee; display: none; }
+        .visual-label { font-size: 11px; color: #999; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
+        .next-btn { width: 100%; padding: 12px; border-radius: 8px; font-size: 15px; cursor: pointer; background: #1D4E89; color: white; border: none; }
+        .next-btn:hover { background: #0d3a6e; }
+        .type-badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; font-family: Arial; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="game">
+    <h1>CSS Selectors Game</h1>
+    <p class="subtitle">Read the CSS rule — identify which type of selector it is.</p>
+
+    <div class="score-row">
+        <div class="score-card"><div class="score-label">Score</div><div class="score-num" id="score">0</div></div>
+        <div class="score-card"><div class="score-label">Question</div><div class="score-num" id="qnum">1 / 12</div></div>
+        <div class="score-card"><div class="score-label">Streak</div><div class="score-num" id="streak">0</div></div>
+    </div>
+
+    <div class="challenge-box">
+        <div class="challenge-label">What type of selector is this?</div>
+        <div class="code-preview" id="code-preview"></div>
+        <div class="question-text" id="question-text"></div>
+    </div>
+
+    <div class="options" id="options"></div>
+
+    <div class="visual" id="visual">
+        <div class="visual-label">Explanation</div>
+        <div id="visual-content"></div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <button class="next-btn" id="next-btn" style="display:none" onclick="nextQ()">Next question</button>
+</div>
+
+<script>
+const questions = [
+  {
+    code: `<span class="pk">h1</span> {\n  <span class="pk">color</span>: <span class="pv">blue</span>;\n}`,
+    question: 'This targets every h1 tag on the page. What type of selector is it?',
+    answer: 'Type selector',
+    options: ['Type selector', 'Class selector', 'ID selector', 'Pseudo-class'],
+    explanation: 'h1 is a type selector — it targets HTML elements by their tag name. It applies to every h1 on the page automatically.',
+    visual: 'Type selectors use the tag name directly: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">h1 { }</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">p { }</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">table { }</code>'
+  },
+  {
+    code: `<span class="pk">.card</span> {\n  <span class="pk">border</span>: <span class="pv">1px solid black</span>;\n}`,
+    question: 'This targets elements that have class="card" in their HTML. What type of selector is it?',
+    answer: 'Class selector',
+    options: ['Type selector', 'Class selector', 'ID selector', 'Attribute selector'],
+    explanation: 'The dot (.) means class selector. It targets any element that carries that class name — reusable and flexible.',
+    visual: 'Class selectors always start with a dot: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">.card { }</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">.hero { }</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">.highlight { }</code>'
+  },
+  {
+    code: `<span class="pk">#hero</span> {\n  <span class="pk">background</span>: <span class="pv">blue</span>;\n}`,
+    question: 'This targets one specific unique element. What type of selector is it?',
+    answer: 'ID selector',
+    options: ['Type selector', 'Class selector', 'ID selector', 'Pseudo-class'],
+    explanation: 'The hash (#) means ID selector. It targets one unique element per page — like a passport number, only one element can have it.',
+    visual: 'ID selectors always start with a hash: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">#hero { }</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">#navigation { }</code>'
+  },
+  {
+    code: `<span class="pk">a:hover</span> {\n  <span class="pk">color</span>: <span class="pv">red</span>;\n}`,
+    question: 'This targets a link only when the mouse is over it. What type of selector is it?',
+    answer: 'Pseudo-class',
+    options: ['Type selector', 'Class selector', 'Pseudo-class', 'Attribute selector'],
+    explanation: 'Pseudo-classes target elements based on their state. The colon (:) is the signal. hover, focus, visited, active are all pseudo-classes.',
+    visual: 'Pseudo-classes use a colon: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">a:hover { }</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">input:focus { }</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">li:first-child { }</code>'
+  },
+  {
+    code: `<span class="pk">a[href="https://facebook.com"]</span> {\n  <span class="pk">color</span>: <span class="pv">rebeccapurple</span>;\n}`,
+    question: 'This targets only the link pointing to Facebook. What type of selector is it?',
+    answer: 'Attribute selector',
+    options: ['Type selector', 'ID selector', 'Pseudo-class', 'Attribute selector'],
+    explanation: 'Attribute selectors target elements based on the value of their attributes. The square brackets [] are the signal. Very precise — targets exactly one element based on its attribute.',
+    visual: 'Attribute selectors use square brackets: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">a[href="..."] { }</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">input[type="text"] { }</code>'
+  },
+  {
+    code: `<span class="pk">td, th</span> {\n  <span class="pk">border</span>: <span class="pv">1px solid black</span>;\n  <span class="pk">padding</span>: <span class="pv">10px</span>;\n}`,
+    question: 'This applies the same rule to both td and th at once. What type of selector is this?',
+    answer: 'Grouped selector',
+    options: ['Type selector', 'Grouped selector', 'Class selector', 'ID selector'],
+    explanation: 'A grouped selector combines multiple selectors with a comma. One rule, applied to all of them. Avoids repetition — write it once, applies everywhere.',
+    visual: 'Grouped selectors use commas: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">td, th { }</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">h1, h2, h3 { }</code>'
+  },
+  {
+    code: `<span class="pk">input:focus</span> {\n  <span class="pk">border-color</span>: <span class="pv">blue</span>;\n}`,
+    question: 'This targets an input field only when the user has clicked into it. What type of selector is it?',
+    answer: 'Pseudo-class',
+    options: ['Attribute selector', 'Class selector', 'Pseudo-class', 'Type selector'],
+    explanation: 'focus is a pseudo-class — it activates when the user clicks into a form field. The element itself has not changed, only its state has.',
+    visual: 'State-based pseudo-classes: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">:focus</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">:hover</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">:active</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">:visited</code>'
+  },
+  {
+    code: `<span class="pk">li:first-child</span> {\n  <span class="pk">font-weight</span>: <span class="pv">bold</span>;\n}`,
+    question: 'This makes the first item in a list bold. What type of selector is it?',
+    answer: 'Pseudo-class',
+    options: ['Type selector', 'Class selector', 'Pseudo-class', 'Grouped selector'],
+    explanation: 'first-child is a structural pseudo-class — it targets an element based on its position, not its state. Same family as :hover but targets position instead of interaction.',
+    visual: 'Position pseudo-classes: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">:first-child</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">:last-child</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">:nth-child(2)</code>'
+  },
+  {
+    code: `<span class="pk">input[type="password"]</span> {\n  <span class="pk">background</span>: <span class="pv">lightyellow</span>;\n}`,
+    question: 'This targets only password input fields, not text or email fields. What type of selector?',
+    answer: 'Attribute selector',
+    options: ['Type selector', 'Pseudo-class', 'Attribute selector', 'Class selector'],
+    explanation: 'Attribute selector — it targets input elements only when they have type="password". Very specific and precise without needing a class.',
+    visual: 'Attribute selectors can target any attribute: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">input[type="text"]</code> <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">input[type="email"]</code>'
+  },
+  {
+    code: `<span class="pk">h1, h2, h3, h4</span> {\n  <span class="pk">font-family</span>: <span class="pv">Arial, sans-serif</span>;\n}`,
+    question: 'This applies Arial font to all four heading sizes at once. What type of selector?',
+    answer: 'Grouped selector',
+    options: ['Type selector', 'Grouped selector', 'Pseudo-class', 'ID selector'],
+    explanation: 'Grouped selector — the comma groups multiple selectors. Instead of writing four separate rules, one rule covers all of them. Clean and efficient.',
+    visual: 'Always use grouped selectors when multiple elements share the same style — avoids repetition.'
+  },
+  {
+    code: `<span class="pk">.card:hover</span> {\n  <span class="pk">border-color</span>: <span class="pv">#1D4E89</span>;\n}`,
+    question: 'This combines two selector types. It targets a card element only when hovered. What are the two types combined?',
+    answer: 'Class + Pseudo-class',
+    options: ['Type + ID', 'Class + Pseudo-class', 'ID + Attribute', 'Type + Class'],
+    explanation: '.card is a class selector. :hover is a pseudo-class. Combined they mean: find elements with class="card" AND only when the mouse is over them. Selectors can be chained together.',
+    visual: 'Chaining selectors: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">.card:hover</code> means class AND state must both match.'
+  },
+  {
+    code: `<span class="pc">/* Which selector has the highest specificity? */</span>\n\n<span class="pk">p</span> { <span class="pk">color</span>: <span class="pv">black</span>; }\n<span class="pk">.text</span> { <span class="pk">color</span>: <span class="pv">blue</span>; }\n<span class="pk">#intro</span> { <span class="pk">color</span>: <span class="pv">green</span>; }`,
+    question: 'All three target the same element. Which selector wins?',
+    answer: '#intro (ID)',
+    options: ['p (type)', '.text (class)', '#intro (ID)', 'They all tie'],
+    explanation: 'ID selector always wins over class and type. Specificity order: ID > Class > Type. Green wins — the element will be green.',
+    visual: 'Specificity ranking: <strong>Inline</strong> > <strong>#id</strong> > <strong>.class</strong> > <strong>tag</strong> — always, regardless of order in the file.'
+  }
+];
+
+let current = 0, score = 0, streak = 0, answered = false;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function render() {
+  const q = questions[current];
+  document.getElementById('code-preview').innerHTML = q.code;
+  document.getElementById('question-text').textContent = q.question;
+  document.getElementById('qnum').textContent = `${current + 1} / ${questions.length}`;
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('visual').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+  answered = false;
+
+  const opts = shuffle(q.options);
+  const container = document.getElementById('options');
+  container.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt;
+    btn.onclick = () => answer(opt, btn, q);
+    container.appendChild(btn);
+  });
+}
+
+function answer(chosen, btn, q) {
+  if (answered) return;
+  answered = true;
+  const correct = chosen === q.answer;
+
+  document.querySelectorAll('.opt').forEach(b => {
+    if (b.textContent === q.answer) b.classList.add('correct');
+    else if (b === btn && !correct) b.classList.add('wrong');
+    b.style.pointerEvents = 'none';
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = `feedback ${correct ? 'correct' : 'wrong'}`;
+  fb.innerHTML = `<strong>${correct ? 'Correct!' : 'Not quite.'}</strong> ${q.explanation}`;
+
+  if (correct) { score++; streak++; }
+  else { streak = 0; }
+
+  document.getElementById('score').textContent = score;
+  document.getElementById('streak').textContent = streak;
+
+  const visual = document.getElementById('visual');
+  document.getElementById('visual-content').innerHTML = q.visual;
+  visual.style.display = 'block';
+
+  document.getElementById('next-btn').style.display = current < questions.length - 1 ? 'block' : 'none';
+
+  if (current === questions.length - 1) {
+    fb.innerHTML += `<br><br><strong>Game over! You scored ${score} out of ${questions.length}.</strong>`;
+  }
+}
+
+function nextQ() { current++; render(); }
+
+render();
+</script>
+</body>
+</html>
