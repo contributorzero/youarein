@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Semantic Tags Game</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f5f5f0; padding: 30px; }
+        .game { max-width: 700px; margin: 0 auto; }
+        h1 { text-align: center; color: #1D4E89; margin-bottom: 6px; }
+        .subtitle { text-align: center; color: #888; font-size: 13px; margin-bottom: 24px; }
+        .score-row { display: flex; gap: 12px; margin-bottom: 20px; }
+        .score-card { background: #fff; border-radius: 8px; padding: 12px 16px; flex: 1; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .score-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+        .score-num { font-size: 22px; font-weight: bold; color: #1D4E89; }
+        .challenge-box { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .challenge-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+        .content-preview { background: #f9f9f9; border-radius: 8px; padding: 16px; margin-bottom: 14px; border: 1px dashed #ddd; }
+        .content-preview p { font-size: 14px; color: #333; line-height: 1.7; margin-bottom: 6px; }
+        .content-preview p:last-child { margin-bottom: 0; }
+        .content-label { font-size: 11px; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; }
+        .question-text { font-size: 15px; font-weight: 500; color: #222; }
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .opt { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 12px 16px; cursor: pointer; font-size: 13px; font-family: monospace; transition: all .1s; text-align: left; }
+        .opt:hover { background: #f5f5f5; border-color: #aaa; }
+        .opt.correct { border-color: #0F6E56; background: #E1F5EE; color: #085041; }
+        .opt.wrong { border-color: #A32D2D; background: #FCEBEB; color: #501313; }
+        .feedback { border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.7; margin-bottom: 16px; min-height: 50px; }
+        .feedback.correct { background: #E1F5EE; color: #085041; border: 1px solid #5DCAA5; }
+        .feedback.wrong { background: #FCEBEB; color: #501313; border: 1px solid #F09595; }
+        .visual { background: #fff; border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; border: 1px solid #eee; font-family: monospace; font-size: 13px; display: none; }
+        .visual-label { font-size: 11px; color: #999; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .05em; font-family: Arial; }
+        .pk { color: #185FA5; } .pv { color: #854F0B; } .pc { color: #888; }
+        .next-btn { width: 100%; padding: 12px; border-radius: 8px; font-size: 15px; cursor: pointer; background: #1D4E89; color: white; border: none; }
+        .next-btn:hover { background: #0d3a6e; }
+        .tag-pill { display: inline-block; font-family: monospace; font-size: 12px; padding: 2px 8px; border-radius: 4px; background: #E6F1FB; color: #185FA5; margin: 2px; }
+    </style>
+</head>
+<body>
+
+<div class="game">
+    <h1>Semantic Tags Game</h1>
+    <p class="subtitle">Look at the content — pick the tag that best describes what it is.</p>
+
+    <div class="score-row">
+        <div class="score-card"><div class="score-label">Score</div><div class="score-num" id="score">0</div></div>
+        <div class="score-card"><div class="score-label">Question</div><div class="score-num" id="qnum">1 / 12</div></div>
+        <div class="score-card"><div class="score-label">Streak</div><div class="score-num" id="streak">0</div></div>
+    </div>
+
+    <div class="challenge-box">
+        <div class="challenge-label">What is this content?</div>
+        <div class="content-preview" id="content-preview"></div>
+        <div class="question-text" id="question-text"></div>
+    </div>
+
+    <div class="options" id="options"></div>
+
+    <div class="visual" id="visual">
+        <div class="visual-label">Correct code</div>
+        <div id="visual-code"></div>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <button class="next-btn" id="next-btn" style="display:none" onclick="nextQ()">Next question</button>
+</div>
+
+<script>
+const questions = [
+  {
+    preview: `<p>BrewTalk — Meet Entrepreneurs Over Coffee</p><p style="color:#888;font-size:12px">Logo · Home · About · Contact</p>`,
+    question: 'This sits at the very top of the page. It has the logo and navigation links. Which tag wraps this?',
+    answer: '<header>',
+    options: ['<header>', '<div>', '<section>', '<nav>'],
+    explanation: 'header is for the top of a page or section — it typically contains the logo, site title, and navigation.',
+    code: `&lt;<span class="pk">header</span>&gt;\n  &lt;<span class="pk">h1</span>&gt;BrewTalk&lt;/<span class="pk">h1</span>&gt;\n  &lt;<span class="pk">nav</span>&gt;...&lt;/<span class="pk">nav</span>&gt;\n&lt;/<span class="pk">header</span>&gt;`
+  },
+  {
+    preview: `<p>Home · About · BrewTalk · Contact</p><p style="color:#888;font-size:12px">These are clickable links to navigate the site</p>`,
+    question: 'This is a group of navigation links. Which tag wraps them?',
+    answer: '<nav>',
+    options: ['<nav>', '<ul>', '<header>', '<div>'],
+    explanation: 'nav is specifically for navigation links — the main menu of a website. It tells browsers and screen readers this is how users move around the site.',
+    code: `&lt;<span class="pk">nav</span>&gt;\n  &lt;<span class="pk">a</span> href="/"&gt;Home&lt;/<span class="pk">a</span>&gt;\n  &lt;<span class="pk">a</span> href="/about"&gt;About&lt;/<span class="pk">a</span>&gt;\n&lt;/<span class="pk">nav</span>&gt;`
+  },
+  {
+    preview: `<p style="font-size:18px;font-weight:bold">How I Built BrewTalk in One Week</p><p style="color:#888;font-size:13px">June 22, 2026 · 5 min read · A full story about the journey from idea to launch...</p>`,
+    question: 'This is a complete blog post — a self-contained story with a title and date. Which tag wraps it?',
+    answer: '<article>',
+    options: ['<article>', '<section>', '<div>', '<main>'],
+    explanation: 'article is for self-contained content that makes sense on its own — a blog post, a news story, a product review. It could be taken out of the page and still make sense.',
+    code: `&lt;<span class="pk">article</span>&gt;\n  &lt;<span class="pk">h2</span>&gt;How I Built BrewTalk&lt;/<span class="pk">h2</span>&gt;\n  &lt;<span class="pk">time</span>&gt;June 22, 2026&lt;/<span class="pk">time</span>&gt;\n  &lt;<span class="pk">p</span>&gt;...&lt;/<span class="pk">p</span>&gt;\n&lt;/<span class="pk">article</span>&gt;`
+  },
+  {
+    preview: `<p>This is the primary content of the page. Everything the user came here to read — the articles, the products, the main information.</p>`,
+    question: 'This is the main content area of the page. There is only one of these per page. Which tag is it?',
+    answer: '<main>',
+    options: ['<main>', '<section>', '<body>', '<div>'],
+    explanation: 'main wraps the primary content of the page — what the user came to see. There should only be one main per page. It excludes headers, footers, and sidebars.',
+    code: `&lt;<span class="pk">main</span>&gt;\n  &lt;<span class="pk">h1</span>&gt;Available Entrepreneurs&lt;/<span class="pk">h1</span>&gt;\n  &lt;<span class="pk">article</span>&gt;...&lt;/<span class="pk">article</span>&gt;\n&lt;/<span class="pk">main</span>&gt;`
+  },
+  {
+    preview: `<p style="font-size:13px;color:#888">Sidebar — Related posts, tips, or extra info</p><p>Not the main content. A supporting panel on the side of the page.</p>`,
+    question: 'This is secondary content — a sidebar with related links and tips. It supports but is not the main content. Which tag?',
+    answer: '<aside>',
+    options: ['<aside>', '<section>', '<div>', '<footer>'],
+    explanation: 'aside is for content that is related to the main content but not essential — a sidebar, a callout box, related links, or a quote pulled from the article.',
+    code: `&lt;<span class="pk">aside</span>&gt;\n  &lt;<span class="pk">h3</span>&gt;Related posts&lt;/<span class="pk">h3</span>&gt;\n  &lt;<span class="pk">ul</span>&gt;...&lt;/<span class="pk">ul</span>&gt;\n&lt;/<span class="pk">aside</span>&gt;`
+  },
+  {
+    preview: `<p style="color:#888;font-size:12px">Bottom of the page</p><p>© 2026 BrewTalk · Privacy Policy · Contact · Built by Hicham</p>`,
+    question: 'This is the bottom of the page — copyright, links, and contact info. Which tag wraps it?',
+    answer: '<footer>',
+    options: ['<footer>', '<div>', '<section>', '<bottom>'],
+    explanation: 'footer is for the bottom of a page or section — typically contains copyright, links, contact info, and credits.',
+    code: `&lt;<span class="pk">footer</span>&gt;\n  &lt;<span class="pk">p</span>&gt;© 2026 BrewTalk&lt;/<span class="pk">p</span>&gt;\n  &lt;<span class="pk">nav</span>&gt;...&lt;/<span class="pk">nav</span>&gt;\n&lt;/<span class="pk">footer</span>&gt;`
+  },
+  {
+    preview: `<p style="font-size:18px;font-weight:bold">Meet the Entrepreneurs</p><p style="color:#888;font-size:13px">A thematic group of entrepreneur cards — not a standalone article, just a section of the page</p>`,
+    question: 'This is a group of content with a theme — entrepreneur cards — but it is not a standalone article. Which tag?',
+    answer: '<section>',
+    options: ['<section>', '<article>', '<div>', '<main>'],
+    explanation: 'section groups related content thematically. Unlike article, a section is not self-contained — it is just one part of a larger page. Use it to divide a page into meaningful chunks.',
+    code: `&lt;<span class="pk">section</span>&gt;\n  &lt;<span class="pk">h2</span>&gt;Meet the Entrepreneurs&lt;/<span class="pk">h2</span>&gt;\n  &lt;<span class="pk">article</span>&gt;...&lt;/<span class="pk">article</span>&gt;\n&lt;/<span class="pk">section</span>&gt;`
+  },
+  {
+    preview: `<div style="text-align:center"><div style="width:80px;height:80px;background:#ddd;border-radius:4px;display:inline-block;margin-bottom:6px"></div><p style="font-size:12px;color:#888">Photo of Anomali Coffee in Jakarta</p></div>`,
+    question: 'This is an image with a caption underneath it. Which tag wraps the image and its caption together?',
+    answer: '<figure>',
+    options: ['<figure>', '<div>', '<img>', '<picture>'],
+    explanation: 'figure is for self-contained media — an image, a chart, a code block — that goes with a caption. The caption itself goes inside figcaption.',
+    code: `&lt;<span class="pk">figure</span>&gt;\n  &lt;<span class="pk">img</span> src="coffee.jpg" alt="Anomali Coffee"&gt;\n  &lt;<span class="pk">figcaption</span>&gt;Anomali Coffee, Jakarta&lt;/<span class="pk">figcaption</span>&gt;\n&lt;/<span class="pk">figure</span>&gt;`
+  },
+  {
+    preview: `<p>Posted on <span style="color:#185FA5">June 22, 2026</span></p><p style="font-size:12px;color:#888">A date that has meaning — an event date, a publication date</p>`,
+    question: 'This is a date — the publication date of an article. Which tag wraps it?',
+    answer: '<time>',
+    options: ['<time>', '<span>', '<date>', '<p>'],
+    explanation: 'time is for dates and times. It looks like normal text but tells machines (Google, calendars, screen readers) that this text represents a specific point in time.',
+    code: `&lt;<span class="pk">time</span> datetime="2026-06-22"&gt;June 22, 2026&lt;/<span class="pk">time</span>&gt;`
+  },
+  {
+    preview: `<p>This is a paragraph and <mark style="background:yellow;padding:2px 4px">this specific phrase</mark> is the most important part the author wants to highlight.</p>`,
+    question: 'Inside a paragraph, certain words are highlighted as especially important. Which tag wraps those words?',
+    answer: '<mark>',
+    options: ['<mark>', '<strong>', '<span>', '<em>'],
+    explanation: 'mark highlights text for reference — like a yellow highlighter on paper. strong makes text bold for importance. mark is specifically for highlighted relevance, not just emphasis.',
+    code: `&lt;<span class="pk">p</span>&gt;The key insight is &lt;<span class="pk">mark</span>&gt;connection over networking&lt;/<span class="pk">mark</span>&gt;.&lt;/<span class="pk">p</span>&gt;`
+  },
+  {
+    preview: `<p style="font-size:13px;color:#888">A generic layout box — holds multiple cards side by side. No specific meaning. Just a container for layout.</p><div style="display:flex;gap:8px;margin-top:8px"><div style="flex:1;background:#E6F1FB;padding:8px;border-radius:4px;font-size:12px;text-align:center">Card 1</div><div style="flex:1;background:#E6F1FB;padding:8px;border-radius:4px;font-size:12px;text-align:center">Card 2</div></div>`,
+    question: 'This is just a layout container — it holds cards side by side but has no specific meaning. Which tag is correct here?',
+    answer: '<div>',
+    options: ['<div>', '<section>', '<main>', '<article>'],
+    explanation: 'When no semantic tag fits — when the container is purely for layout with no inherent meaning — div is the right choice. Not everything needs a semantic tag. div is the honest answer when meaning is absent.',
+    code: `&lt;<span class="pk">div</span> class="cards-grid"&gt;\n  &lt;<span class="pk">article</span>&gt;Card 1&lt;/<span class="pk">article</span>&gt;\n  &lt;<span class="pk">article</span>&gt;Card 2&lt;/<span class="pk">article</span>&gt;\n&lt;/<span class="pk">div</span>&gt;`
+  },
+  {
+    preview: `<p style="font-size:18px;font-weight:bold">Full Page Structure</p><p style="font-size:13px;color:#888">header → nav → main → section → article → aside → footer</p><p style="font-size:12px;margin-top:6px">What is the correct order of a well-structured semantic HTML page?</p>`,
+    question: 'Which is the correct semantic structure for a full webpage from top to bottom?',
+    answer: 'header → main → footer',
+    options: ['header → main → footer', 'div → div → div', 'nav → body → aside', 'section → article → nav'],
+    explanation: 'A well-structured semantic page goes: header (top) → main (primary content) → footer (bottom). Nav usually sits inside header. Sections and articles go inside main. Aside sits alongside main.',
+    code: `&lt;<span class="pk">header</span>&gt;...&lt;/<span class="pk">header</span>&gt;\n&lt;<span class="pk">main</span>&gt;\n  &lt;<span class="pk">section</span>&gt;\n    &lt;<span class="pk">article</span>&gt;...&lt;/<span class="pk">article</span>&gt;\n  &lt;/<span class="pk">section</span>&gt;\n&lt;/<span class="pk">main</span>&gt;\n&lt;<span class="pk">footer</span>&gt;...&lt;/<span class="pk">footer</span>&gt;`
+  }
+];
+
+let current = 0, score = 0, streak = 0, answered = false;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function render() {
+  const q = questions[current];
+  document.getElementById('content-preview').innerHTML = q.preview;
+  document.getElementById('question-text').textContent = q.question;
+  document.getElementById('qnum').textContent = `${current + 1} / ${questions.length}`;
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('visual').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+  answered = false;
+
+  const opts = shuffle(q.options);
+  const container = document.getElementById('options');
+  container.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt;
+    btn.onclick = () => answer(opt, btn, q);
+    container.appendChild(btn);
+  });
+}
+
+function answer(chosen, btn, q) {
+  if (answered) return;
+  answered = true;
+  const correct = chosen === q.answer;
+
+  document.querySelectorAll('.opt').forEach(b => {
+    if (b.textContent === q.answer) b.classList.add('correct');
+    else if (b === btn && !correct) b.classList.add('wrong');
+    b.style.pointerEvents = 'none';
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = `feedback ${correct ? 'correct' : 'wrong'}`;
+  fb.innerHTML = `<strong>${correct ? 'Correct!' : 'Not quite.'}</strong> ${q.explanation}`;
+
+  if (correct) { score++; streak++; }
+  else { streak = 0; }
+
+  document.getElementById('score').textContent = score;
+  document.getElementById('streak').textContent = streak;
+
+  const visual = document.getElementById('visual');
+  document.getElementById('visual-code').innerHTML = q.code;
+  visual.style.display = 'block';
+
+  document.getElementById('next-btn').style.display = current < questions.length - 1 ? 'block' : 'none';
+
+  if (current === questions.length - 1) {
+    fb.innerHTML += `<br><br><strong>Game over! You scored ${score} out of ${questions.length}.</strong>`;
+  }
+}
+
+function nextQ() { current++; render(); }
+
+render();
+</script>
+</body>
+</html>
